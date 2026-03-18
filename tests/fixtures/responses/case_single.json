@@ -1,0 +1,14 @@
+{
+  "data": {
+    "case": {
+      "ixBug": 1234,
+      "sTitle": "Sample Bug Title",
+      "sStatus": "Active",
+      "sPersonAssignedTo": "John Doe",
+      "ixPriority": 2,
+      "sProject": "My Project",
+      "sArea": "Development",
+      "sCategory": "Bug"
+    }
+  }
+}

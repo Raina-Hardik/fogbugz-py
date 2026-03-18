@@ -1,0 +1,7 @@
+[fogbugz]
+base_url = "https://test.manuscript.com"
+token = "test-token-12345"
+
+[retry]
+max_attempts = 3
+max_wait_seconds = 60

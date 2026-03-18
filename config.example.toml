@@ -1,0 +1,33 @@
+# FogBugz Configuration Example
+# Copy this file to config.toml and fill in your credentials
+# WARNING: The actual config.toml file should NEVER be committed to version control!
+
+[fogbugz]
+# Base URL of your FogBugz instance (without trailing slash)
+# Example: "https://yourcompany.manuscript.com"
+base_url = "https://yourcompany.fogbugz.com/"
+
+# API token for authentication (preferred method)
+# Get your token from: {base_url}/f/userPrefs/
+token = "your-api-token-here"
+
+# Alternative: Username/password authentication (not recommended)
+# username = "your-email@example.com"
+# password = "your-password"
+
+[retry]
+# Maximum number of retry attempts for failed requests
+max_attempts = 3
+
+# Maximum wait time between retries (seconds)
+max_wait_seconds = 60
+
+# Whether to retry on timeout errors
+retry_on_timeout = true
+
+[http]
+# Request timeout in seconds
+timeout = 30
+
+# Connection timeout in seconds
+connect_timeout = 10
