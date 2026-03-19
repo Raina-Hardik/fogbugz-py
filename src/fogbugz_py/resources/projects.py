@@ -44,11 +44,14 @@ class ProjectsResource:
         """
         logger.debug("Listing all projects")
 
-        response = await self._client._request("GET", "/api/v3/projects")
+        response = await self._client._request(
+            "POST",
+            "/f/api/0/jsonapi",
+            json={"cmd": "listProjects"},
+        )
 
-        # Parse response into Project objects
-        projects_data = response.get("projects", [])
-        projects = [Project(**project_data) for project_data in projects_data]
+        projects_data = response.get("data", {}).get("projects", [])
+        projects = [Project(**self._normalize_project_data(project_data)) for project_data in projects_data]
 
         logger.debug("Found %d projects", len(projects))
         return projects
@@ -73,11 +76,27 @@ class ProjectsResource:
         """
         logger.debug("Getting project %d", project_id)
 
-        response = await self._client._request("GET", f"/api/v3/projects/{project_id}")
+        response = await self._client._request(
+            "POST",
+            "/f/api/0/jsonapi",
+            json={"cmd": "viewProject", "ixProject": project_id},
+        )
 
-        # Parse response into Project object
-        project_data = response.get("project", response)
-        project = Project(**project_data)
+        project_data = response.get("data", {}).get("project", {})
+        if not project_data:
+            raise ValueError(f"Project {project_id} not found")
+
+        project = Project(**self._normalize_project_data(project_data))
 
         logger.debug("Retrieved project %d", project_id)
         return project
+
+    @staticmethod
+    def _normalize_project_data(project_data: dict) -> dict:
+        normalized = dict(project_data)
+
+        # Legacy API uses sProject, while the model supports sProjectName.
+        if "sProjectName" not in normalized and "sProject" in normalized:
+            normalized["sProjectName"] = normalized["sProject"]
+
+        return normalized
