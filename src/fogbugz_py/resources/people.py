@@ -47,12 +47,21 @@ class PeopleResource:
         """
         logger.debug("Searching people with name: %s", name)
 
-        params: dict[str, Any] = {"q": name}
-        response = await self._client._request("GET", "/api/v3/people", params=params)
+        response = await self._client._request(
+            "POST",
+            "/f/api/0/jsonapi",
+            json={"cmd": "listPeople"},
+        )
 
-        # Parse response into Person objects
-        people_data = response.get("people", [])
-        people = [Person(**person_data) for person_data in people_data]
+        people_data = response.get("data", {}).get("people", [])
+        all_people = [Person(**person_data) for person_data in people_data]
+
+        query = name.casefold()
+        people = [
+            person
+            for person in all_people
+            if query in person.name.casefold() or query in (person.email or "").casefold()
+        ]
 
         logger.debug("Found %d people", len(people))
         return people
@@ -77,10 +86,16 @@ class PeopleResource:
         """
         logger.debug("Getting person %d", person_id)
 
-        response = await self._client._request("GET", f"/api/v3/people/{person_id}")
+        response = await self._client._request(
+            "POST",
+            "/f/api/0/jsonapi",
+            json={"cmd": "viewPerson", "ixPerson": person_id},
+        )
 
-        # Parse response into Person object
-        person_data = response.get("person", response)
+        person_data: dict[str, Any] = response.get("data", {}).get("person", {})
+        if not person_data:
+            raise ValueError(f"Person {person_id} not found")
+
         person = Person(**person_data)
 
         logger.debug("Retrieved person %d", person_id)
