@@ -35,8 +35,8 @@ class TestFogBugzClientInit:
 
     def test_init_requires_auth(self) -> None:
         """Test client initialization fails without authentication."""
-        with pytest.raises(Exception):  # FogBugzAuthError
-            FogBugzClient(base_url="https://example.manuscript.com")
+        with pytest.raises(ValueError):
+            FogBugzClient(base_url="https://example.manuscript.com", token="")
 
     def test_init_with_custom_http_settings(self) -> None:
         """Test client initialization with custom HTTP settings."""
@@ -95,7 +95,7 @@ class TestCasesResource:
     async def test_search_cases(self) -> None:
         """Test searching for cases."""
         with respx.mock:
-            respx.post("https://example.manuscript.com/api/search").mock(
+            respx.post("https://example.manuscript.com/f/api/0/jsonapi").mock(
                 return_value=httpx.Response(
                     200,
                     json={
@@ -127,7 +127,7 @@ class TestCasesResource:
     async def test_get_case(self) -> None:
         """Test retrieving a specific case."""
         with respx.mock:
-            respx.post("https://example.manuscript.com/api/search").mock(
+            respx.post("https://example.manuscript.com/f/api/0/jsonapi").mock(
                 return_value=httpx.Response(
                     200,
                     json={
@@ -159,7 +159,7 @@ class TestCasesResource:
     async def test_search_cases_with_max_results(self) -> None:
         """Test searching cases with max_results parameter."""
         with respx.mock:
-            respx.post("https://example.manuscript.com/api/search").mock(
+            respx.post("https://example.manuscript.com/f/api/0/jsonapi").mock(
                 return_value=httpx.Response(
                     200,
                     json={"data": {"cases": []}},
@@ -180,22 +180,24 @@ class TestProjectsResource:
     async def test_list_projects(self) -> None:
         """Test listing all projects."""
         with respx.mock:
-            respx.get("https://example.manuscript.com/api/v3/projects").mock(
+            respx.post("https://example.manuscript.com/f/api/0/jsonapi").mock(
                 return_value=httpx.Response(
                     200,
                     json={
-                        "projects": [
-                            {
-                                "ixProject": 1,
-                                "sProjectName": "Project A",
-                                "sDesc": "First project",
-                            },
-                            {
-                                "ixProject": 2,
-                                "sProjectName": "Project B",
-                                "sDesc": "Second project",
-                            },
-                        ]
+                        "data": {
+                            "projects": [
+                                {
+                                    "ixProject": 1,
+                                    "sProject": "Project A",
+                                    "sDesc": "First project",
+                                },
+                                {
+                                    "ixProject": 2,
+                                    "sProject": "Project B",
+                                    "sDesc": "Second project",
+                                },
+                            ]
+                        }
                     },
                 )
             )
@@ -214,14 +216,18 @@ class TestProjectsResource:
     async def test_get_project(self) -> None:
         """Test retrieving a specific project."""
         with respx.mock:
-            respx.get("https://example.manuscript.com/api/v3/projects/1").mock(
+            respx.post("https://example.manuscript.com/f/api/0/jsonapi").mock(
                 return_value=httpx.Response(
                     200,
                     json={
-                        "ixProject": 1,
-                        "sProjectName": "Main Project",
-                        "sDesc": "Main project description",
-                        "sStatus": "Active",
+                        "data": {
+                            "project": {
+                                "ixProject": 1,
+                                "sProject": "Main Project",
+                                "sDesc": "Main project description",
+                                "sStatus": "Active",
+                            }
+                        }
                     },
                 )
             )
@@ -243,17 +249,19 @@ class TestPeopleResource:
     async def test_search_people(self) -> None:
         """Test searching for people."""
         with respx.mock:
-            respx.get("https://example.manuscript.com/api/v3/people").mock(
+            respx.post("https://example.manuscript.com/f/api/0/jsonapi").mock(
                 return_value=httpx.Response(
                     200,
                     json={
-                        "people": [
-                            {
-                                "ixPerson": 1,
-                                "sFullName": "John Doe",
-                                "sEmail": "john@example.com",
-                            }
-                        ]
+                        "data": {
+                            "people": [
+                                {
+                                    "ixPerson": 1,
+                                    "sFullName": "John Doe",
+                                    "sEmail": "john@example.com",
+                                }
+                            ]
+                        }
                     },
                 )
             )
@@ -272,14 +280,18 @@ class TestPeopleResource:
     async def test_get_person(self) -> None:
         """Test retrieving a specific person."""
         with respx.mock:
-            respx.get("https://example.manuscript.com/api/v3/people/1").mock(
+            respx.post("https://example.manuscript.com/f/api/0/jsonapi").mock(
                 return_value=httpx.Response(
                     200,
                     json={
-                        "ixPerson": 1,
-                        "sFullName": "John Doe",
-                        "sEmail": "john@example.com",
-                        "sPhone": "555-1234",
+                        "data": {
+                            "person": {
+                                "ixPerson": 1,
+                                "sFullName": "John Doe",
+                                "sEmail": "john@example.com",
+                                "sPhone": "555-1234",
+                            }
+                        }
                     },
                 )
             )
@@ -302,7 +314,7 @@ class TestClientErrorHandling:
     async def test_auth_error_on_401(self) -> None:
         """Test authentication error on 401 response."""
         with respx.mock:
-            respx.post("https://example.manuscript.com/api/search").mock(
+            respx.post("https://example.manuscript.com/f/api/0/jsonapi").mock(
                 return_value=httpx.Response(401)
             )
 
@@ -317,7 +329,7 @@ class TestClientErrorHandling:
     async def test_not_found_error_on_404(self) -> None:
         """Test not found error on 404 response."""
         with respx.mock:
-            respx.post("https://example.manuscript.com/api/search").mock(
+            respx.post("https://example.manuscript.com/f/api/0/jsonapi").mock(
                 return_value=httpx.Response(404)
             )
 
