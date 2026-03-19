@@ -8,6 +8,7 @@ from __future__ import annotations
 from typing import Any
 
 from fogbugz_py.cli.commands.case import get_case_command
+from fogbugz_py.cli.commands.people import get_person_command, search_people_command
 from fogbugz_py.cli.commands.projects import list_projects_command
 from fogbugz_py.cli.commands.search import search_command
 from fogbugz_py.cli.commands.whoami import whoami_command
@@ -33,9 +34,11 @@ def build_app() -> Any:
 
     app = typer.Typer(help="FogBugz CLI")
     case_app = typer.Typer(help="Case commands")
+    people_app = typer.Typer(help="People commands")
     projects_app = typer.Typer(help="Project commands")
 
     app.add_typer(case_app, name="case")
+    app.add_typer(people_app, name="people")
     app.add_typer(projects_app, name="projects")
 
     @app.callback()
@@ -94,6 +97,24 @@ def build_app() -> Any:
         """List all projects."""
         options = _ctx_options(ctx)
         _run_command(lambda: _render_projects(options))
+
+    @people_app.command("search")
+    def people_search(
+        ctx: typer.Context,
+        name: str = typer.Argument(..., help="Name to search"),
+    ) -> None:
+        """Search people by name."""
+        options = _ctx_options(ctx)
+        _run_command(lambda: _render_people_search(options, name))
+
+    @people_app.command("get")
+    def people_get(
+        ctx: typer.Context,
+        person_id: int = typer.Argument(..., help="Person ID"),
+    ) -> None:
+        """Get a person by ID."""
+        options = _ctx_options(ctx)
+        _run_command(lambda: _render_people_get(options, person_id))
 
     @app.command("whoami")
     def whoami(ctx: typer.Context) -> None:
@@ -169,6 +190,33 @@ def _render_projects(options: CLIOptions) -> None:
         for project in projects
     ]
     OutputFormatter.format_table(rows, title=f"Projects ({len(projects)})")
+
+
+def _render_people_search(options: CLIOptions, name: str) -> None:
+    people = search_people_command(options, name)
+    rows = [
+        {
+            "ID": person.id,
+            "Name": person.name,
+            "Email": person.email,
+            "Phone": person.phone,
+        }
+        for person in people
+    ]
+    OutputFormatter.format_table(rows, title=f"People ({len(people)})")
+
+
+def _render_people_get(options: CLIOptions, person_id: int) -> None:
+    person = get_person_command(options, person_id)
+    rows = [
+        {
+            "ID": person.id,
+            "Name": person.name,
+            "Email": person.email,
+            "Phone": person.phone,
+        }
+    ]
+    OutputFormatter.format_table(rows, title=f"Person {person.id}")
 
 
 def _render_whoami(options: CLIOptions) -> None:
