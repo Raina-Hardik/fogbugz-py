@@ -161,10 +161,18 @@ This document tracks the features and capabilities of the `fogbugz-py` client li
 - Type checking (mypy) validation
 - Linting (ruff) passing
 
-### Phase 5: CLI Tooling
+### Phase 5: CLI Tooling ✅
 - Command-line interface using Typer framework
 - Rich output formatting for terminal display
-- Subcommands for case search, project listing, etc.
+- Read-focused command set:
+  - `fogbugz search "<query>"`
+  - `fogbugz case get <id>`
+  - `fogbugz case events <id> --max <n>`
+  - `fogbugz projects list`
+  - `fogbugz projects get <id>`
+  - `fogbugz people search <name>`
+  - `fogbugz people get <id>`
+  - `fogbugz whoami`
 - Config file auto-discovery and environment variable support
 
 ## Usage Example (Current Phase)
@@ -204,13 +212,13 @@ asyncio.run(main())
 ## Development Status
 
 - ✅ Core foundation complete (config, auth, HTTP transport)
-- ✅ Comprehensive test suite passing (83 tests)
+- ✅ Comprehensive read-path coverage for resources and CLI
 - ✅ Error handling with domain-specific exceptions
 - ✅ Retry logic with exponential backoff
 - ✅ Client core class (Phase 3)
 - ✅ Resource implementations (Phase 3)
-- ⏳ Resource enhancements & polish (Phase 4)
-- ⏳ CLI interface (Phase 5)
+- ✅ CLI interface (Phase 5)
+- ⏳ Structured logging extra
 
 ## Documentation Files
 

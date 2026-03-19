@@ -358,13 +358,16 @@ hatch run pytest -k "asyncio"
    - Run ruff linting
    - Fix any issues found
 
-### Phase 5: CLI Implementation
+### Phase 5: CLI Implementation (Completed)
 
 5. **CLI commands (typer extra)**
    - `fogbugz search "<query>"` - Search cases
    - `fogbugz case get <id>` - Get specific case
+    - `fogbugz case events <id> --max <n>` - Get case events
    - `fogbugz projects list` - List projects
+    - `fogbugz projects get <id>` - Get specific project
    - `fogbugz people search <name>` - Search people
+    - `fogbugz people get <id>` - Get specific person
    - `fogbugz whoami` - Show current user
 
 6. **CLI output formatting**
