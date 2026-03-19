@@ -197,8 +197,20 @@ fogbugz search "status:open assignedTo:me"
 # Get specific case
 fogbugz case get 1234
 
+# Show case events
+fogbugz case events 1234 --max 20
+
 # List projects
 fogbugz projects list
+
+# Get specific project
+fogbugz projects get 2
+
+# Search people
+fogbugz people search "Alice"
+
+# Get specific person
+fogbugz people get 117
 
 # Show current user
 fogbugz whoami
@@ -293,11 +305,11 @@ For FogBugz API reference: [https://api.manuscript.com/](https://api.manuscript.
 - [x] Core async client
 - [x] Config resolution
 - [x] Authentication (API token)
-- [ ] Cases resource (search, get)
-- [ ] Projects resource
-- [ ] People resource
-- [ ] CLI (typer extra)
-- [ ] Documentation
+- [x] Cases resource (search, find, get, events)
+- [x] Projects resource (list, get)
+- [x] People resource (search, get)
+- [x] CLI (typer extra)
+- [x] Documentation
 
 ### Post-v1
 

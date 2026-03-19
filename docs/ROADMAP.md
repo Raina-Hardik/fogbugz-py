@@ -81,12 +81,16 @@ Phase 3 (Core Client) now complete. Phase 4 (Polish) and Phase 5 (CLI) planned n
 - [ ] Linting (ruff) passing
 
 ### Phase 5: Optional Features
-- [ ] CLI (typer extra)
-  - [ ] `fogbugz search` command
-  - [ ] `fogbugz case get` command
-  - [ ] `fogbugz projects list` command
-  - [ ] `fogbugz whoami` command
-  - [ ] Rich table output
+- [x] CLI (typer extra)
+  - [x] `fogbugz search` command
+  - [x] `fogbugz case get` command
+  - [x] `fogbugz case events` command
+  - [x] `fogbugz projects list` command
+  - [x] `fogbugz projects get` command
+  - [x] `fogbugz people search` command
+  - [x] `fogbugz people get` command
+  - [x] `fogbugz whoami` command
+  - [x] Rich table output
 - [ ] Structured logging (logging extra)
   - [ ] structlog configuration
   - [ ] Request/response logging
@@ -98,7 +102,7 @@ Phase 3 (Core Client) now complete. Phase 4 (Polish) and Phase 5 (CLI) planned n
 - ✅ All smoke tests passing
 - ✅ Documentation complete with working examples
 - ✅ Type hints validated
-- ✅ CLI basic commands working (if extra installed)
+- ✅ CLI read commands working (if extra installed)
 
 ---
 
