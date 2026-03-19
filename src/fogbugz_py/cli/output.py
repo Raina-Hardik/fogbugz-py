@@ -31,7 +31,9 @@ class OutputFormatter:
                 table.add_column(column)
 
             for row in data:
-                table.add_row(*[OutputFormatter._stringify(row.get(column, "")) for column in columns])
+                table.add_row(
+                    *[OutputFormatter._stringify(row.get(column, "")) for column in columns]
+                )
 
             Console().print(table)
             return

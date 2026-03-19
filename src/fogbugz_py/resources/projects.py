@@ -51,7 +51,9 @@ class ProjectsResource:
         )
 
         projects_data = response.get("data", {}).get("projects", [])
-        projects = [Project(**self._normalize_project_data(project_data)) for project_data in projects_data]
+        projects = [
+            Project(**self._normalize_project_data(project_data)) for project_data in projects_data
+        ]
 
         logger.debug("Found %d projects", len(projects))
         return projects

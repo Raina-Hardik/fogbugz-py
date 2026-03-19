@@ -58,16 +58,16 @@ async def test_get_project_returns_model() -> None:
         cast(
             Any,
             _FakeClient(
-            {
-                "data": {
-                    "project": {
-                        "ixProject": 11,
-                        "sProject": "IDS-Verify",
-                        "sStatus": "Active",
-                        "sDesc": "Verification work",
+                {
+                    "data": {
+                        "project": {
+                            "ixProject": 11,
+                            "sProject": "IDS-Verify",
+                            "sStatus": "Active",
+                            "sDesc": "Verification work",
+                        }
                     }
                 }
-            }
             ),
         )
     )

@@ -28,13 +28,14 @@ class Case(BaseModel):
     resolved: datetime | None = Field(alias="dtResolved", default=None)
     last_updated: datetime | None = Field(alias="dtLastUpdated", default=None)
     customer_email: str | None = Field(alias="sCustomerEmail", default=None)
-    
+
     @field_validator("opened", "closed", "resolved", "last_updated", mode="before")
     @classmethod
     def empty_string_to_none(cls, v):
         if v == "":
             return None
         return v
+
 
 class CaseSearchResult(BaseModel):
     """Result from a case search operation."""

@@ -9,7 +9,9 @@ from fogbugz_py.cli.context import CLIOptions, resolve_client_kwargs
 from fogbugz_py.models.case import Case
 
 
-def search_command(options: CLIOptions, query: str, *, max_results: int | None = None) -> list[Case]:
+def search_command(
+    options: CLIOptions, query: str, *, max_results: int | None = None
+) -> list[Case]:
     """Search for cases matching a query.
 
     Args:
