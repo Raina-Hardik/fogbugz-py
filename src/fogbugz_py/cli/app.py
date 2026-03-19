@@ -7,9 +7,9 @@ from __future__ import annotations
 
 from typing import Any
 
-from fogbugz_py.cli.commands.case import get_case_command
+from fogbugz_py.cli.commands.case import get_case_command, get_case_events_command
 from fogbugz_py.cli.commands.people import get_person_command, search_people_command
-from fogbugz_py.cli.commands.projects import list_projects_command
+from fogbugz_py.cli.commands.projects import get_project_command, list_projects_command
 from fogbugz_py.cli.commands.search import search_command
 from fogbugz_py.cli.commands.whoami import whoami_command
 from fogbugz_py.cli.context import CLIOptions
@@ -92,11 +92,30 @@ def build_app() -> Any:
         options = _ctx_options(ctx)
         _run_command(lambda: _render_case(options, case_id))
 
+    @case_app.command("events")
+    def case_events(
+        ctx: typer.Context,
+        case_id: int = typer.Argument(..., help="Case ID"),
+        max_results: int | None = typer.Option(None, "--max", help="Maximum events"),
+    ) -> None:
+        """Get events for a specific case."""
+        options = _ctx_options(ctx)
+        _run_command(lambda: _render_case_events(options, case_id, max_results=max_results))
+
     @projects_app.command("list")
     def projects_list(ctx: typer.Context) -> None:
         """List all projects."""
         options = _ctx_options(ctx)
         _run_command(lambda: _render_projects(options))
+
+    @projects_app.command("get")
+    def projects_get(
+        ctx: typer.Context,
+        project_id: int = typer.Argument(..., help="Project ID"),
+    ) -> None:
+        """Get a specific project by ID."""
+        options = _ctx_options(ctx)
+        _run_command(lambda: _render_project_get(options, project_id))
 
     @people_app.command("search")
     def people_search(
@@ -178,6 +197,21 @@ def _render_case(options: CLIOptions, case_id: int) -> None:
     OutputFormatter.format_table(rows, title=f"Case {case.id}")
 
 
+def _render_case_events(options: CLIOptions, case_id: int, *, max_results: int | None) -> None:
+    events_result = get_case_events_command(options, case_id, max_results=max_results)
+    rows = [
+        {
+            "Event ID": event.id,
+            "When": event.timestamp,
+            "Person": event.person,
+            "Verb": event.verb,
+            "Email": event.is_email,
+        }
+        for event in events_result.events
+    ]
+    OutputFormatter.format_table(rows, title=f"Case {case_id} Events ({events_result.count})")
+
+
 def _render_projects(options: CLIOptions) -> None:
     projects = list_projects_command(options)
     rows = [
@@ -190,6 +224,19 @@ def _render_projects(options: CLIOptions) -> None:
         for project in projects
     ]
     OutputFormatter.format_table(rows, title=f"Projects ({len(projects)})")
+
+
+def _render_project_get(options: CLIOptions, project_id: int) -> None:
+    project = get_project_command(options, project_id)
+    rows = [
+        {
+            "ID": project.id,
+            "Name": project.name,
+            "Status": project.status,
+            "Description": project.description,
+        }
+    ]
+    OutputFormatter.format_table(rows, title=f"Project {project.id}")
 
 
 def _render_people_search(options: CLIOptions, name: str) -> None:
